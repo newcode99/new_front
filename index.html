@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>릴리(Lilly) — 릴스/숏폼 대본 기획 AI</title>
+    <meta name="description" content="릴리 AI가 실시간으로 바이럴 릴스·숏폼 대본을 3초 킬링훅부터 씬별 연출까지 완벽하게 기획해 드립니다.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Pretendard:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+    <!-- 1. 인증 모달 (로그인 / 회원가입 전환 + 닫기 지원) -->
+    <div id="auth-modal" class="auth-overlay">
+        <div class="auth-card">
+            <button type="button" class="btn-modal-close" onclick="closeAuthModal()" title="닫고 둘러보기">✕</button>
+
+            <div class="auth-brand">
+                <div class="auth-mascot-wrapper">
+                    <!-- 릴리 미니 SVG (라이트 파스텔 톤) -->
+                    <svg viewBox="0 0 120 120" width="72" height="72">
+                        <circle cx="60" cy="60" r="54" fill="#EEF2FF" stroke="#6366F1" stroke-width="2.5"/>
+                        <rect x="40" y="15" width="40" height="13" rx="3" fill="#4F46E5"/>
+                        <line x1="48" y1="15" x2="52" y2="28" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/>
+                        <line x1="60" y1="15" x2="64" y2="28" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/>
+                        <line x1="72" y1="15" x2="76" y2="28" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/>
+                        <circle cx="60" cy="65" r="31" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+                        <ellipse class="lilly-eye" cx="49" cy="63" rx="3.5" ry="5" fill="#1E1B4B"/>
+                        <ellipse class="lilly-eye" cx="71" cy="63" rx="3.5" ry="5" fill="#1E1B4B"/>
+                        <circle cx="50" cy="61" r="1.3" fill="#FFFFFF"/>
+                        <circle cx="72" cy="61" r="1.3" fill="#FFFFFF"/>
+                        <circle cx="43" cy="70" r="4.5" fill="#F472B6" opacity="0.65"/>
+                        <circle cx="77" cy="70" r="4.5" fill="#F472B6" opacity="0.65"/>
+                        <path d="M53 73 Q60 81 67 73" stroke="#1E1B4B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h1 id="auth-modal-title" class="auth-title">크리에이터 로그인</h1>
+                <p class="auth-subtitle">로그인하시면 릴스 대본 기획 및 개인 히스토리를 저장할 수 있습니다</p>
+            </div>
+
+            <!-- 탭 전환 -->
+            <div class="auth-tabs">
+                <button type="button" id="tab-login" class="auth-tab-btn active" onclick="switchAuthTab('login')">로그인</button>
+                <button type="button" id="tab-signup" class="auth-tab-btn" onclick="switchAuthTab('signup')">회원가입</button>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                <div class="form-group">
+                    <label for="username">아이디 (ID)</label>
+                    <input type="text" id="username" placeholder="아이디를 3자 이상 입력하세요" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">비밀번호 (Password)</label>
+                    <input type="password" id="password" placeholder="비밀번호를 4자 이상 입력하세요" required autocomplete="current-password">
+                </div>
+
+                <div class="form-group" id="confirm-pwd-group" style="display:none;">
+                    <label for="confirm-password">비밀번호 확인</label>
+                    <input type="password" id="confirm-password" placeholder="비밀번호를 다시 한 번 입력하세요" autocomplete="new-password">
+                </div>
+
+                <div id="auth-error-msg" class="auth-error"></div>
+
+                <button type="submit" id="auth-submit-btn" class="btn-primary-auth">
+                    로그인하고 기획 시작하기
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>또는</span>
+            </div>
+
+            <button type="button" class="btn-guest-action" onclick="continueAsGuest()">
+                ⚡ 로그인 없이 둘러보기 (게스트 모드)
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. DB 로그 및 세션 모니터 모달 -->
+    <div id="db-modal" class="auth-overlay">
+        <div class="auth-card db-log-card">
+            <button type="button" class="btn-modal-close" onclick="closeDbModal()">✕</button>
+            <div class="db-modal-header">
+                <h2 class="db-title">📊 DB 대화 로그 & 세션 추적기</h2>
+            </div>
+            <div class="db-modal-tabs">
+                <button type="button" id="db-tab-logs" class="db-tab-btn active" onclick="switchDbTab('logs')">대화 메시지 로그</button>
+                <button type="button" id="db-tab-sessions" class="db-tab-btn" onclick="switchDbTab('sessions')">세션 목록</button>
+            </div>
+            <div class="db-table-box">
+                <table class="db-table">
+                    <thead id="db-table-head">
+                        <tr>
+                            <th>ID</th>
+                            <th>역할</th>
+                            <th>내용 요약</th>
+                            <th>시간</th>
+                        </tr>
+                    </thead>
+                    <tbody id="db-table-body">
+                        <!-- JS 렌더링 -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="db-status-bar">
+                <span class="db-status-text">● SQLite / FastAPI 규격 로컬 동기화 활성</span>
+                <button type="button" class="btn-card-action" onclick="clearDbLogs()">전체 로그 비우기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 메인 앱 레이아웃 -->
+    <div class="app-layout">
+
+        <!-- 사이드바 -->
+        <aside id="sidebar" class="app-sidebar">
+            <!-- 사이드바 헤더: 릴리 브랜드 -->
+            <div class="sidebar-header">
+                <div class="brand-mascot-card" onclick="triggerMascotClick()" title="릴리를 클릭해 보세요! ✨">
+                    <div class="sidebar-mascot-avatar">
+                        <svg id="main-mascot" class="lilly-mascot-svg" viewBox="0 0 120 120" width="42" height="42">
+                            <circle class="halo-ring" cx="60" cy="60" r="52" fill="none" stroke="#6366F1" stroke-width="2" stroke-dasharray="5 4"/>
+                            <circle cx="60" cy="60" r="46" fill="#EEF2FF" stroke="#6366F1" stroke-width="2"/>
+                            <rect class="slate-bar" x="40" y="16" width="40" height="13" rx="3" fill="#4F46E5"/>
+                            <line x1="48" y1="16" x2="52" y2="29" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/>
+                            <line x1="60" y1="16" x2="64" y2="29" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/>
+                            <line x1="72" y1="16" x2="76" y2="29" stroke="rgba(255,255,255,0.7)" stroke-width="1.8"/>
+                            <circle cx="60" cy="64" r="30" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+                            <ellipse id="mascot-eye-left" class="lilly-eye" cx="49" cy="63" rx="3.5" ry="5" fill="#1E1B4B"/>
+                            <ellipse id="mascot-eye-right" class="lilly-eye" cx="71" cy="63" rx="3.5" ry="5" fill="#1E1B4B"/>
+                            <circle cx="50" cy="61" r="1.3" fill="#FFFFFF"/>
+                            <circle cx="72" cy="61" r="1.3" fill="#FFFFFF"/>
+                            <circle cx="43" cy="70" r="4.5" fill="#F472B6" opacity="0.65"/>
+                            <circle cx="77" cy="70" r="4.5" fill="#F472B6" opacity="0.65"/>
+                            <path id="mascot-mouth" d="M53 72 Q60 80 67 72" stroke="#1E1B4B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                        </svg>
+                        <span id="mascot-emotion-badge" class="mascot-badge-dot">🎬</span>
+                    </div>
+                    <div class="sidebar-brand-text">
+                        <span class="brand-name">릴리 (Lilly) AI</span>
+                        <span id="mascot-status-desc" class="brand-desc">숏폼 기획 디렉터</span>
+                    </div>
+                </div>
+                <!-- 사이드바 접기 버튼 -->
+                <button type="button" class="btn-sidebar-toggle" onclick="toggleSidebar()" title="사이드바 접기 (Ctrl+B)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 사이드바 콘텐츠: 새 기획 버튼 & 히스토리 목록 -->
+            <div class="sidebar-content">
+                <button type="button" class="btn-new-chat-main" onclick="startNewChat()">
+                    <span class="btn-new-icon">✨</span>
+                    <span>새 릴스 기획 시작</span>
+                </button>
+
+                <div class="sidebar-section-header">
+                    <span class="section-label">기획 히스토리</span>
+                    <span id="history-count" class="history-count-badge">0개</span>
+                </div>
+
+                <!-- 히스토리 스크롤 목록 -->
+                <div id="chat-history-list" class="history-list-container">
+                    <!-- JS 렌더링 -->
+                </div>
+            </div>
+
+            <!-- 사이드바 하단 도구 -->
+            <div class="sidebar-tools">
+                <button type="button" class="btn-sidebar-tool" onclick="openDbModal()">
+                    <span class="tool-icon">📊</span>
+                    <span>DB 로그 & 세션 추적</span>
+                </button>
+            </div>
+
+            <!-- 사이드바 푸터 (사용자 상태) -->
+            <div class="sidebar-footer">
+                <div class="user-profile-section">
+                    <div class="user-profile-card">
+                        <div id="current-user-avatar" class="user-avatar">G</div>
+                        <div class="user-meta">
+                            <div id="current-user-name" class="user-name">게스트 (비로그인)</div>
+                            <div id="current-user-status" class="user-status-pill">○ 로그인 필요</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-logout" onclick="logout()" title="로그아웃">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 메인 뷰포트 -->
+        <main class="app-main">
+            <!-- 탑바 -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button type="button" id="btn-sidebar-open" class="btn-open-sidebar" onclick="toggleSidebar()" title="사이드바 열기 (Ctrl+B)">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="3" y1="12" x2="21" y2="12"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <line x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
+
+                    <div class="topbar-session-badge">
+                        <span id="topbar-session-title" class="session-title">새 릴스 기획</span>
+                        <span class="session-engine-pill">⚡ Lilly Turbo</span>
+                        <span class="context-mode-pill">3-turn 문맥 유지</span>
+                    </div>
+                </div>
+
+                <!-- 탑바 우측: 로그인/가입/로그 뷰어 -->
+                <div class="topbar-right">
+                    <button type="button" class="btn-topbar-logs" onclick="openDbModal()">
+                        <span>📊</span>
+                        <span>DB 로그</span>
+                    </button>
+
+                    <!-- 게스트 상태 버튼 -->
+                    <div id="topbar-guest-actions" class="topbar-auth-group">
+                        <button type="button" class="btn-topbar-login" onclick="openAuthModal('login')">로그인</button>
+                        <button type="button" class="btn-topbar-signup" onclick="openAuthModal('signup')">회원가입</button>
+                    </div>
+
+                    <!-- 로그인 상태 배지 -->
+                    <div id="topbar-user-actions" class="topbar-auth-group" style="display:none;">
+                        <div class="user-profile-badge">
+                            <span id="topbar-user-avatar" class="topbar-user-avatar">C</span>
+                            <span id="topbar-username" class="topbar-username-text">Creator</span>
+                        </div>
+                        <button type="button" class="btn-topbar-logout" onclick="logout()">로그아웃</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 채팅 뷰포트 -->
+            <div class="chat-viewport">
+                <section id="chat-messages" class="chat-messages-container">
+
+                    <!-- 웰컴 히어로 (새 세션 초기 화면) -->
+                    <div class="welcome-hero-container">
+                        <div class="hero-mascot-box" title="릴리를 클릭해 보세요! ✨">
+                            <div class="hero-avatar-wrap" onclick="triggerMascotClick(event)">
+                                <svg class="lilly-hero-svg" viewBox="0 0 120 120" width="96" height="96">
+                                    <circle class="halo-ring" cx="60" cy="60" r="54" fill="none" stroke="#6366F1" stroke-width="2.5" stroke-dasharray="6 4"/>
+                                    <circle cx="60" cy="60" r="48" fill="#EEF2FF" stroke="#6366F1" stroke-width="2.5"/>
+                                    <rect class="slate-bar" x="38" y="14" width="44" height="15" rx="3.5" fill="#4F46E5"/>
+                                    <line x1="48" y1="14" x2="53" y2="29" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+                                    <line x1="60" y1="14" x2="65" y2="29" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+                                    <line x1="72" y1="14" x2="77" y2="29" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+                                    <circle cx="60" cy="65" r="32" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.8"/>
+                                    <ellipse class="lilly-eye" cx="49" cy="64" rx="4" ry="5.5" fill="#1E1B4B"/>
+                                    <ellipse class="lilly-eye" cx="71" cy="64" rx="4" ry="5.5" fill="#1E1B4B"/>
+                                    <circle cx="50" cy="62" r="1.7" fill="#FFFFFF"/>
+                                    <circle cx="72" cy="62" r="1.7" fill="#FFFFFF"/>
+                                    <circle cx="43" cy="71" r="5" fill="#F472B6" opacity="0.65"/>
+                                    <circle cx="77" cy="71" r="5" fill="#F472B6" opacity="0.65"/>
+                                    <path d="M53 74 Q60 83 67 74" stroke="#1E1B4B" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+                                    <polygon class="sparkle-star" points="98,28 100,34 106,36 100,38 98,44 96,38 90,36 96,34" fill="#F59E0B"/>
+                                    <polygon class="sparkle-star-sm" points="22,46 23,50 27,51 23,52 22,56 21,52 17,51 21,50" fill="#F43F5E"/>
+                                </svg>
+                            </div>
+                            <div class="mascot-click-hint" onclick="triggerMascotClick(event)">💡 릴리를 클릭하면 꿀팁을 발화해요! ✨</div>
+                        </div>
+
+                        <h2 class="hero-title">어떤 릴스 대본을 기획해 볼까요?</h2>
+                        <p class="hero-subtitle">아이디어 한 줄만 주시면 <strong>3초 킬링훅부터 씬별 카메라 연출</strong>까지 실시간으로 기획해 드려요 ✨</p>
+
+                        <!-- 퀵스타터 카드 그리드 -->
+                        <div class="starter-cards-grid">
+                            <div class="starter-card" onclick="applyTemplate('3초 안에 시선 잡는 인스타 릴스 꿀팁 영상 기획해 줘')">
+                                <div class="starter-badge-row">
+                                    <span class="starter-tag">⚡ 바이럴 훅</span>
+                                    <span class="starter-arrow">→</span>
+                                </div>
+                                <h4 class="starter-card-title">3초 꿀팁 릴스</h4>
+                                <p class="starter-card-desc">시청 이탈을 원천 차단하는 강력한 첫 씬 연출</p>
+                            </div>
+
+                            <div class="starter-card" onclick="applyTemplate('다이어트 직장인 현실 공감 30초 릴스 대본 짜 줘')">
+                                <div class="starter-badge-row">
+                                    <span class="starter-tag">🥗 현실 공감</span>
+                                    <span class="starter-arrow">→</span>
+                                </div>
+                                <h4 class="starter-card-title">현실 공감 브이로그</h4>
+                                <p class="starter-card-desc">직장인 1인칭 시점의 30초 현실 밀착 스토리</p>
+                            </div>
+
+                            <div class="starter-card" onclick="applyTemplate('개발자 숏폼: 초보자가 매일 하는 실수 TOP 3 기획')">
+                                <div class="starter-badge-row">
+                                    <span class="starter-tag">💻 정보 전달</span>
+                                    <span class="starter-arrow">→</span>
+                                </div>
+                                <h4 class="starter-card-title">초보 실수 TOP 3</h4>
+                                <p class="starter-card-desc">저장과 공유를 부르는 3단계 꿀팁 정보형 숏폼</p>
+                            </div>
+
+                            <div class="starter-card" onclick="applyTemplate('인스타 알고리즘 떡상하는 치트키 3가지 릴스')">
+                                <div class="starter-badge-row">
+                                    <span class="starter-tag">📈 알고리즘</span>
+                                    <span class="starter-arrow">→</span>
+                                </div>
+                                <h4 class="starter-card-title">떡상 치트키 릴스</h4>
+                                <p class="starter-card-desc">조회수와 팔로워를 급상승시키는 공식 대본</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+
+            <!-- 하단 고정 채팅 입력 영역 (ChatGPT급 프리미엄 폼) -->
+            <footer class="chat-bottom-section">
+
+                <!-- 빠른 템플릿 칩 슬라이더 -->
+                <div class="preset-chips-slider">
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('운동 루틴 릴스: 초보자가 헬스장 첫날 피해야 할 3가지')">
+                        <span class="chip-emoji">🏋️</span>
+                        <span>헬스장 첫날 실수 3가지</span>
+                    </button>
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('카페/맛집 릴스: 분위기 깡패 신상 카페 15초 감성 컷 연출')">
+                        <span class="chip-emoji">☕</span>
+                        <span>15초 신상 카페 감성 컷</span>
+                    </button>
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('공부/생산성 릴스: 집중력 2배 올려주는 뽀모도로 타이머 활용법')">
+                        <span class="chip-emoji">⏱️</span>
+                        <span>집중력 2배 뽀모도로 팁</span>
+                    </button>
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('뷰티/스킨케어 릴스: 환절기 피부 뒤집어졌을 때 응급 처치 루틴')">
+                        <span class="chip-emoji">✨</span>
+                        <span>피부 응급 처치 3단계</span>
+                    </button>
+                </div>
+
+                <!-- 입력창 메인 래퍼 -->
+                <div class="chat-input-wrapper">
+
+                    <!-- 비로그인 게이트 오버레이 -->
+                    <div id="login-required-overlay" class="login-required-gate" style="display:none;">
+                        <div class="gate-content">
+                            <span class="gate-icon">🔒</span>
+                            <span class="gate-text">릴스 대본 기획은 로그인 후 이용 가능합니다.</span>
+                            <button type="button" class="btn-gate-login" onclick="openAuthModal('login')">로그인하고 시작하기</button>
+                        </div>
+                    </div>
+
+                    <!-- AI 컨트롤 툴바 -->
+                    <div class="ai-controls-toolbar">
+                        <div class="control-group">
+                            <span class="ctrl-label">⏱️ 길이:</span>
+                            <select id="select-duration" class="custom-select">
+                                <option value="30s" selected>30초 (표준 바이럴)</option>
+                                <option value="15s">15초 (킬링훅)</option>
+                                <option value="60s">60초 (스토리텔링)</option>
+                            </select>
+                        </div>
+
+                        <div class="control-group">
+                            <span class="ctrl-label">🎨 톤:</span>
+                            <select id="select-tone" class="custom-select">
+                                <option value="viral" selected>🔥 도파민 자극형</option>
+                                <option value="humor">😂 B급 유머/반전</option>
+                                <option value="pro">👔 신뢰 전문가형</option>
+                                <option value="vlog">☕ 감성 브이로그</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn-enhance-magic" onclick="enhancePromptWithMagic()">
+                            ✨ 프롬프트 다듬기
+                        </button>
+                    </div>
+
+                    <!-- 텍스트에어리어 -->
+                    <div class="textarea-wrapper">
+                        <textarea
+                            id="user-input"
+                            placeholder="기획하고 싶은 릴스 주제를 입력하세요... (Enter: 전송 / Shift+Enter: 줄바꿈)"
+                            rows="2"
+                            onkeydown="handleKeyDown(event)"
+                            oninput="autoResize(this)"
+                        ></textarea>
+
+                        <div class="input-bottom-actions">
+                            <div class="char-counter">
+                                <span id="char-count">0</span> / 1,000자
+                            </div>
+
+                            <button id="btn-send" class="btn-send" onclick="sendMessage()">
+                                <span id="btn-send-text">대본 기획 시작</span>
+                                <svg id="btn-send-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- 토스트 -->
+    <div id="toast" class="toast-popup"></div>
+
+    <!-- 파티클 레이어 -->
+    <div id="particle-container" class="particle-canvas-layer"></div>
+
+    <!-- 스크립트 모듈 로드 -->
+    <script src="static/js/api.js"></script>
+    <script src="static/js/app.js"></script>
+</body>
+</html>
