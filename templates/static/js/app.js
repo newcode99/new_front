@@ -1032,7 +1032,7 @@ function triggerMascotClick(event) {
     ];
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
-    showToast(`릴리 디렉터: "${randomQuote}"`);
+    // 릴리 캐릭터 우측 말풍선에 대사 표시 (헤더 가림 방지)
     showMascotSpeechBubble(randomQuote);
 
     // 탑바 상태 위젯 피드백
@@ -1313,48 +1313,33 @@ function clearDbLogs() {
    10. 유틸리티 (토스트, 상대 시간, 특수문자 이스케이프, 파티클)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 let toastTimer = null;
+let lastToastTime = 0;
+let lastToastMessage = "";
+
 function showToast(message) {
     if (!message) return;
 
-    const container = document.getElementById("toast-container");
-    const legacyToast = document.getElementById("toast");
-
-    // 1) 스택형 토스트 컨테이너가 있는 경우
-    if (container) {
-        // 최대 3개 초과 시 가장 오래된 토스트 제거
-        const existingToasts = container.querySelectorAll(".toast-item");
-        if (existingToasts.length >= 3) {
-            existingToasts[0].remove();
-        }
-
-        const item = document.createElement("div");
-        item.className = "toast-item";
-        item.innerText = message;
-        container.appendChild(item);
-
-        // 강제 리플로우 후 표시 애니메이션
-        void item.offsetWidth;
-        item.classList.add("show");
-
-        setTimeout(() => {
-            item.classList.remove("show");
-            setTimeout(() => {
-                if (item.parentNode) item.remove();
-            }, 300);
-        }, 2800);
+    const now = Date.now();
+    // 동일 메시지 또는 1.8초 이내 빠른 연속 호출 시 도배 방지 (텀 적용)
+    if (message === lastToastMessage && now - lastToastTime < 2400) {
         return;
     }
 
-    // 2) 하위 호환 레거시 토스트 요소
-    if (legacyToast) {
-        legacyToast.innerText = message;
-        legacyToast.classList.add("show");
+    lastToastTime = now;
+    lastToastMessage = message;
 
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-            legacyToast.classList.remove("show");
-        }, 2800);
-    }
+    const toast = document.getElementById("toast");
+    if (!toast) return;
+
+    toast.innerText = message;
+    toast.classList.remove("show");
+    void toast.offsetWidth; // 리플로우 유도
+    toast.classList.add("show");
+
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2800);
 }
 
 function escapeHtml(text) {
