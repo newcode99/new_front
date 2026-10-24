@@ -12,7 +12,7 @@
 </head>
 <body>
 
-    <!-- 1. 인증 모달 (로그인 / 회원가입 전환 + 닫기 지원) -->
+    <!-- 1. 인증 모달 (로그인 / 회원가입 전환 + 실시간 상태 피드백 + 비밀번호 보기/숨기기) -->
     <div id="auth-modal" class="auth-overlay">
         <div class="auth-card">
             <button type="button" class="btn-modal-close" onclick="closeAuthModal()" title="닫고 둘러보기">✕</button>
@@ -47,25 +47,63 @@
             </div>
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)">
-                <div class="form-group">
-                    <label for="username">아이디 (ID)</label>
-                    <input type="text" id="username" placeholder="아이디를 3자 이상 입력하세요" required autocomplete="username">
+                <!-- 퀵 테스트 계정 채우기 -->
+                <div class="quick-demo-chip-bar">
+                    <button type="button" class="btn-quick-fill" onclick="fillDemoAccount()">
+                        <span class="chip-bolt">⚡</span>
+                        <span>체험용 테스트 계정 1초 자동입력 (creator1)</span>
+                    </button>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">비밀번호 (Password)</label>
-                    <input type="password" id="password" placeholder="비밀번호를 4자 이상 입력하세요" required autocomplete="current-password">
+                    <div class="form-label-row">
+                        <label for="username">아이디 (ID)</label>
+                        <span id="username-feedback" class="field-feedback-text"></span>
+                    </div>
+                    <div class="input-with-icon-wrap">
+                        <input type="text" id="username" placeholder="영문/숫자 3자 이상" required autocomplete="username" oninput="validateUsernameLive()">
+                        <span id="username-status-icon" class="input-status-icon"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label-row">
+                        <label for="password">비밀번호 (Password)</label>
+                        <span id="password-feedback" class="field-feedback-text"></span>
+                    </div>
+                    <div class="input-with-icon-wrap">
+                        <input type="password" id="password" placeholder="4자 이상 입력" required autocomplete="current-password" oninput="validatePasswordLive()">
+                        <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('password', this)" title="비밀번호 보기/숨기기" tabindex="-1">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                    <!-- 비밀번호 강도 바 (회원가입 시 표시) -->
+                    <div id="password-strength-wrap" class="strength-bar-wrap" style="display:none;">
+                        <div class="strength-bar-track">
+                            <div id="strength-bar-fill" class="strength-bar-fill"></div>
+                        </div>
+                        <span id="strength-label" class="strength-label-text">보안 수준: 입력 대기</span>
+                    </div>
                 </div>
 
                 <div class="form-group" id="confirm-pwd-group" style="display:none;">
-                    <label for="confirm-password">비밀번호 확인</label>
-                    <input type="password" id="confirm-password" placeholder="비밀번호를 다시 한 번 입력하세요" autocomplete="new-password">
+                    <div class="form-label-row">
+                        <label for="confirm-password">비밀번호 확인</label>
+                        <span id="confirm-feedback" class="field-feedback-text"></span>
+                    </div>
+                    <div class="input-with-icon-wrap">
+                        <input type="password" id="confirm-password" placeholder="비밀번호 다시 입력" autocomplete="new-password" oninput="validateConfirmPasswordLive()">
+                        <button type="button" class="btn-toggle-eye" onclick="togglePasswordVisibility('confirm-password', this)" title="비밀번호 보기/숨기기" tabindex="-1">
+                            <span class="eye-icon">👁️</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div id="auth-error-msg" class="auth-error"></div>
 
                 <button type="submit" id="auth-submit-btn" class="btn-primary-auth">
-                    로그인하고 기획 시작하기
+                    <span id="auth-btn-spinner" class="btn-spinner" style="display:none;"></span>
+                    <span id="auth-btn-text">로그인하고 기획 시작하기</span>
                 </button>
             </form>
 
@@ -88,16 +126,16 @@
             </div>
             <div class="db-modal-tabs">
                 <button type="button" id="db-tab-logs" class="db-tab-btn active" onclick="switchDbTab('logs')">대화 메시지 로그</button>
-                <button type="button" id="db-tab-sessions" class="db-tab-btn" onclick="switchDbTab('sessions')">세션 목록</button>
+                <button type="button" id="db-tab-sessions" class="db-tab-btn" onclick="switchDbTab('sessions')">세션 추적 정보</button>
             </div>
             <div class="db-table-box">
                 <table class="db-table">
                     <thead id="db-table-head">
                         <tr>
-                            <th>ID</th>
-                            <th>역할</th>
-                            <th>내용 요약</th>
-                            <th>시간</th>
+                            <th style="width: 15%;">로그 ID</th>
+                            <th style="width: 50%;">기획 프롬프트 요약</th>
+                            <th style="width: 20%;">상태 코드</th>
+                            <th style="width: 15%;">기록 시각</th>
                         </tr>
                     </thead>
                     <tbody id="db-table-body">
@@ -119,7 +157,7 @@
         <aside id="sidebar" class="app-sidebar">
             <!-- 사이드바 헤더: 릴리 브랜드 -->
             <div class="sidebar-header">
-                <div class="brand-mascot-card" onclick="triggerMascotClick()" title="릴리를 클릭해 보세요! ✨">
+                <div class="brand-mascot-card" onclick="triggerMascotClick(event)" title="릴리를 클릭해 보세요! ✨">
                     <div class="sidebar-mascot-avatar">
                         <svg id="main-mascot" class="lilly-mascot-svg" viewBox="0 0 120 120" width="42" height="42">
                             <circle class="halo-ring" cx="60" cy="60" r="52" fill="none" stroke="#6366F1" stroke-width="2" stroke-dasharray="5 4"/>
@@ -161,13 +199,18 @@
 
                 <div class="sidebar-section-header">
                     <span class="section-label">기획 히스토리</span>
-                    <span id="history-count" class="history-count-badge">0개</span>
+                    <div class="history-controls">
+                        <span id="history-count" class="history-count-badge">0개</span>
+                        <button type="button" class="btn-clear-history-mini" onclick="clearAllHistory()" title="전체 히스토리 비우기">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- 히스토리 스크롤 목록 -->
-                <div id="chat-history-list" class="history-list-container">
+                <!-- 히스토리 스크롤 목록 (id 통일: history-list & chat-history-list) -->
+                <ul id="history-list" class="history-list-container">
                     <!-- JS 렌더링 -->
-                </div>
+                </ul>
             </div>
 
             <!-- 사이드바 하단 도구 -->
@@ -201,7 +244,7 @@
 
         <!-- 메인 뷰포트 -->
         <main class="app-main">
-            <!-- 탑바 -->
+            <!-- 탑바 (헤더) -->
             <header class="app-topbar">
                 <div class="topbar-left">
                     <button type="button" id="btn-sidebar-open" class="btn-open-sidebar" onclick="toggleSidebar()" title="사이드바 열기 (Ctrl+B)">
@@ -214,31 +257,59 @@
 
                     <div class="topbar-session-badge">
                         <span id="topbar-session-title" class="session-title">새 릴스 기획</span>
-                        <span class="session-engine-pill">⚡ Lilly Turbo</span>
                         <span class="context-mode-pill">3-turn 문맥 유지</span>
                     </div>
                 </div>
 
-                <!-- 탑바 우측: 로그인/가입/로그 뷰어 -->
+                <!-- [핵심 고도화] 일반 헤더 실시간 릴리 AI 상태 위젯 센터 -->
+                <div class="topbar-center">
+                    <div id="topbar-lilly-live-status" class="lilly-live-status-pill idle" title="릴리 AI 실시간 디렉팅 상태">
+                        <span class="status-live-dot"></span>
+                        <div class="status-avatar-mini">
+                            <svg viewBox="0 0 120 120" width="18" height="18">
+                                <circle cx="60" cy="60" r="54" fill="#EEF2FF" stroke="#6366F1" stroke-width="3"/>
+                                <ellipse cx="49" cy="63" rx="3.5" ry="5" fill="#1E1B4B"/>
+                                <ellipse cx="71" cy="63" rx="3.5" ry="5" fill="#1E1B4B"/>
+                                <circle cx="43" cy="70" r="4.5" fill="#F472B6" opacity="0.7"/>
+                                <circle cx="77" cy="70" r="4.5" fill="#F472B6" opacity="0.7"/>
+                                <path d="M53 73 Q60 81 67 73" stroke="#1E1B4B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <span id="topbar-status-text" class="status-live-text">릴리 대기 중 · 기획 준비 완료</span>
+                        <span id="topbar-status-stage" class="status-stage-tag">IDLE</span>
+                    </div>
+                </div>
+
+                <!-- 탑바 우측: DB 로그 & 로그인/가입/프로필 -->
                 <div class="topbar-right">
                     <button type="button" class="btn-topbar-logs" onclick="openDbModal()">
                         <span>📊</span>
                         <span>DB 로그</span>
                     </button>
 
-                    <!-- 게스트 상태 버튼 -->
+                    <!-- 비로그인 게스트 상태 버튼 세트 -->
                     <div id="topbar-guest-actions" class="topbar-auth-group">
                         <button type="button" class="btn-topbar-login" onclick="openAuthModal('login')">로그인</button>
                         <button type="button" class="btn-topbar-signup" onclick="openAuthModal('signup')">회원가입</button>
                     </div>
 
-                    <!-- 로그인 상태 배지 -->
-                    <div id="topbar-user-actions" class="topbar-auth-group" style="display:none;">
-                        <div class="user-profile-badge">
-                            <span id="topbar-user-avatar" class="topbar-user-avatar">C</span>
-                            <span id="topbar-username" class="topbar-username-text">Creator</span>
+                    <!-- [핵심 고도화] 로그인 상태 조화로운 통합 프로필 카드 -->
+                    <div id="topbar-user-actions" class="topbar-user-profile-wrap" style="display:none;">
+                        <div class="user-profile-pill">
+                            <span id="topbar-user-avatar" class="user-avatar-circle">C</span>
+                            <div class="user-info-text">
+                                <span id="topbar-username" class="user-display-name">Creator</span>
+                                <span class="user-role-tag">PRO CREATOR</span>
+                            </div>
                         </div>
-                        <button type="button" class="btn-topbar-logout" onclick="logout()">로그아웃</button>
+                        <button type="button" class="btn-topbar-logout-unified" onclick="logout()" title="로그아웃">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <polyline points="16 17 21 12 16 7"/>
+                                <line x1="21" y1="12" x2="9" y2="12"/>
+                            </svg>
+                            <span>로그아웃</span>
+                        </button>
                     </div>
                 </div>
             </header>
@@ -278,7 +349,7 @@
 
                         <!-- 퀵스타터 카드 그리드 -->
                         <div class="starter-cards-grid">
-                            <div class="starter-card" onclick="applyTemplate('3초 안에 시선 잡는 인스타 릴스 꿀팁 영상 기획해 줘')">
+                            <div class="starter-card" onclick="applyTemplate(null, '3초 안에 시선 잡는 인스타 릴스 꿀팁 영상 기획해 줘')">
                                 <div class="starter-badge-row">
                                     <span class="starter-tag">⚡ 바이럴 훅</span>
                                     <span class="starter-arrow">→</span>
@@ -287,7 +358,7 @@
                                 <p class="starter-card-desc">시청 이탈을 원천 차단하는 강력한 첫 씬 연출</p>
                             </div>
 
-                            <div class="starter-card" onclick="applyTemplate('다이어트 직장인 현실 공감 30초 릴스 대본 짜 줘')">
+                            <div class="starter-card" onclick="applyTemplate(null, '다이어트 직장인 현실 공감 30초 릴스 대본 짜 줘')">
                                 <div class="starter-badge-row">
                                     <span class="starter-tag">🥗 현실 공감</span>
                                     <span class="starter-arrow">→</span>
@@ -296,7 +367,7 @@
                                 <p class="starter-card-desc">직장인 1인칭 시점의 30초 현실 밀착 스토리</p>
                             </div>
 
-                            <div class="starter-card" onclick="applyTemplate('개발자 숏폼: 초보자가 매일 하는 실수 TOP 3 기획')">
+                            <div class="starter-card" onclick="applyTemplate(null, '개발자 숏폼: 초보자가 매일 하는 실수 TOP 3 기획')">
                                 <div class="starter-badge-row">
                                     <span class="starter-tag">💻 정보 전달</span>
                                     <span class="starter-arrow">→</span>
@@ -305,7 +376,7 @@
                                 <p class="starter-card-desc">저장과 공유를 부르는 3단계 꿀팁 정보형 숏폼</p>
                             </div>
 
-                            <div class="starter-card" onclick="applyTemplate('인스타 알고리즘 떡상하는 치트키 3가지 릴스')">
+                            <div class="starter-card" onclick="applyTemplate(null, '인스타 알고리즘 떡상하는 치트키 3가지 릴스')">
                                 <div class="starter-badge-row">
                                     <span class="starter-tag">📈 알고리즘</span>
                                     <span class="starter-arrow">→</span>
@@ -319,24 +390,24 @@
                 </section>
             </div>
 
-            <!-- 하단 고정 채팅 입력 영역 (ChatGPT급 프리미엄 폼) -->
+            <!-- 하단 고정 채팅 입력 영역 (ChatGPT/Claude급 프리미엄 폼) -->
             <footer class="chat-bottom-section">
 
                 <!-- 빠른 템플릿 칩 슬라이더 -->
                 <div class="preset-chips-slider">
-                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('운동 루틴 릴스: 초보자가 헬스장 첫날 피해야 할 3가지')">
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate(null, '운동 루틴 릴스: 초보자가 헬스장 첫날 피해야 할 3가지')">
                         <span class="chip-emoji">🏋️</span>
                         <span>헬스장 첫날 실수 3가지</span>
                     </button>
-                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('카페/맛집 릴스: 분위기 깡패 신상 카페 15초 감성 컷 연출')">
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate(null, '카페/맛집 릴스: 분위기 깡패 신상 카페 15초 감성 컷 연출')">
                         <span class="chip-emoji">☕</span>
                         <span>15초 신상 카페 감성 컷</span>
                     </button>
-                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('공부/생산성 릴스: 집중력 2배 올려주는 뽀모도로 타이머 활용법')">
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate(null, '공부/생산성 릴스: 집중력 2배 올려주는 뽀모도로 타이머 활용법')">
                         <span class="chip-emoji">⏱️</span>
                         <span>집중력 2배 뽀모도로 팁</span>
                     </button>
-                    <button type="button" class="preset-chip-btn" onclick="applyTemplate('뷰티/스킨케어 릴스: 환절기 피부 뒤집어졌을 때 응급 처치 루틴')">
+                    <button type="button" class="preset-chip-btn" onclick="applyTemplate(null, '뷰티/스킨케어 릴스: 환절기 피부 뒤집어졌을 때 응급 처치 루틴')">
                         <span class="chip-emoji">✨</span>
                         <span>피부 응급 처치 3단계</span>
                     </button>
@@ -354,29 +425,40 @@
                         </div>
                     </div>
 
-                    <!-- AI 컨트롤 툴바 -->
+                    <!-- [핵심 고도화] 통일된 톤앤매너의 AI 컨트롤 툴바 -->
                     <div class="ai-controls-toolbar">
-                        <div class="control-group">
-                            <span class="ctrl-label">⏱️ 길이:</span>
-                            <select id="select-duration" class="custom-select">
-                                <option value="30s" selected>30초 (표준 바이럴)</option>
-                                <option value="15s">15초 (킬링훅)</option>
-                                <option value="60s">60초 (스토리텔링)</option>
-                            </select>
+                        <div class="control-chip-group">
+                            <span class="control-chip-label">⏱️ 영상 길이</span>
+                            <div class="custom-select-wrapper">
+                                <select id="select-duration" class="custom-select-styled">
+                                    <option value="30s" selected>30초 (표준 바이럴)</option>
+                                    <option value="15s">15초 (초강력 킬링훅)</option>
+                                    <option value="60s">60초 (스토리텔링)</option>
+                                </select>
+                                <span class="select-chevron">▾</span>
+                            </div>
                         </div>
 
-                        <div class="control-group">
-                            <span class="ctrl-label">🎨 톤:</span>
-                            <select id="select-tone" class="custom-select">
-                                <option value="viral" selected>🔥 도파민 자극형</option>
-                                <option value="humor">😂 B급 유머/반전</option>
-                                <option value="pro">👔 신뢰 전문가형</option>
-                                <option value="vlog">☕ 감성 브이로그</option>
-                            </select>
+                        <div class="control-group-divider"></div>
+
+                        <div class="control-chip-group">
+                            <span class="control-chip-label">🎨 톤앤매너</span>
+                            <div class="custom-select-wrapper">
+                                <select id="select-tone" class="custom-select-styled">
+                                    <option value="viral" selected>🔥 도파민 자극형</option>
+                                    <option value="humor">😂 B급 유머/반전</option>
+                                    <option value="pro">👔 신뢰 전문가형</option>
+                                    <option value="vlog">☕ 감성 브이로그</option>
+                                </select>
+                                <span class="select-chevron">▾</span>
+                            </div>
                         </div>
 
-                        <button type="button" class="btn-enhance-magic" onclick="enhancePromptWithMagic()">
-                            ✨ 프롬프트 다듬기
+                        <div class="control-toolbar-spacer"></div>
+
+                        <button type="button" class="btn-enhance-magic-styled" onclick="enhancePromptWithMagic()">
+                            <span class="magic-sparkle">✨</span>
+                            <span>프롬프트 다듬기</span>
                         </button>
                     </div>
 
@@ -387,7 +469,7 @@
                             placeholder="기획하고 싶은 릴스 주제를 입력하세요... (Enter: 전송 / Shift+Enter: 줄바꿈)"
                             rows="2"
                             onkeydown="handleKeyDown(event)"
-                            oninput="autoResize(this)"
+                            oninput="handleInputLive(this)"
                         ></textarea>
 
                         <div class="input-bottom-actions">

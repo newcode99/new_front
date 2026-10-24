@@ -190,6 +190,37 @@ const ApiService = {
         localStorage.setItem("local_chat_history", JSON.stringify(history.slice(0, 30)));
     },
 
+    // 히스토리 개별 항목 삭제 (로컬 + FastAPI 동기화)
+    async deleteHistory(id) {
+        const token = this.getToken();
+        if (token) {
+            try {
+                await fetch(`${API_BASE}/api/me/chats/${id}`, {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+            } catch (e) {}
+        }
+        let history = await this.getMyHistory();
+        history = history.filter(item => item.id !== id);
+        localStorage.setItem("local_chat_history", JSON.stringify(history));
+        return history;
+    },
+
+    // 전체 히스토리 초기화 (로컬 + FastAPI 동기화)
+    async clearAllHistory() {
+        const token = this.getToken();
+        if (token) {
+            try {
+                await fetch(`${API_BASE}/api/me/chats`, {
+                    method: "DELETE",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+            } catch (e) {}
+        }
+        localStorage.removeItem("local_chat_history");
+    },
+
     // 5. 핵심: 실시간 대본 스트리밍 (문맥 Context 전달 + FastAPI SSE + 로컬 가변 타이핑)
     sendChatStream(prompt, options = {}, onChunk, onComplete, onError) {
         const token = this.getToken();

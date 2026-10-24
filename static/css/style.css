@@ -1,14 +1,14 @@
 /* ============================================================
-   style.css — 릴리(Lilly) AI 기획소 | 프리미엄 라이트 테마 (Modern Clean Light)
-   Typography: Pretendard + Plus Jakarta Sans (Google Fonts)
-   Design: Premium Light Glassmorphism · Vivid Gradients · Micro-interactions
+   style.css — 릴리(Lilly) AI 기획소 | 프리미엄 라이트 테마 (Ultra-Refined)
+   Typography: Pretendard + Plus Jakarta Sans
+   Design: Modern Clean Slate · Vivid Micro-interactions · Deep Polish
    ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Pretendard:wght@300;400;500;600;700;800;900&display=swap');
 
-/* ━━━━━━ CSS 디자인 토큰 (프리미엄 밝은 톤) ━━━━━━ */
+/* ━━━━━━ CSS 디자인 토큰 ━━━━━━ */
 :root {
-  /* 배경 계열 (깨끗하고 눈이 편안한 슬레이트 화이트) */
+  /* 배경 계열 */
   --bg-deep:      #F8FAFC;
   --bg-surface:   #FFFFFF;
   --bg-card:      #FFFFFF;
@@ -18,24 +18,28 @@
   --bg-sidebar:   #FFFFFF;
   --bg-input:     #FFFFFF;
 
-  /* 프라이머리 릴리 바이올렛/인디고 */
+  /* 프라이머리 바이올렛 */
   --primary:        #6366F1;
   --primary-light:  #4F46E5;
   --primary-soft:   rgba(99, 102, 241, 0.08);
   --primary-glow:   rgba(99, 102, 241, 0.2);
   --primary-grad:   linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
 
-  /* 포인트 어센트 (릴스/숏폼 트렌디 무드) */
+  /* 포인트 어센트 */
   --accent-pink:      #F43F5E;
   --accent-pink-soft: rgba(244, 63, 94, 0.08);
   --accent-amber:     #F59E0B;
+  --accent-amber-soft: rgba(245, 158, 11, 0.1);
   --accent-teal:      #0D9488;
   --accent-teal-soft: rgba(13, 148, 136, 0.08);
+  --accent-green:     #10B981;
+  --accent-green-soft: rgba(16, 185, 129, 0.1);
 
-  /* 타이포그래피 컬러 (고대비 가독성 확보) */
+  /* 타이포그래피 */
   --text-primary:   #0F172A;
   --text-secondary: #334155;
   --text-muted:     #64748B;
+  --text-subtle:    #94A3B8;
   --text-white:     #FFFFFF;
 
   /* 보더 & 라인 */
@@ -44,24 +48,26 @@
   --border-hover:   rgba(99, 102, 241, 0.4);
   --border-focus:   #6366F1;
 
-  /* 소프트 레이어드 섀도우 */
-  --shadow-sm:    0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+  /* 섀도우 */
+  --shadow-xs:    0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm:    0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.03);
   --shadow-md:    0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
   --shadow-lg:    0 12px 32px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
   --shadow-glow:  0 8px 24px rgba(99, 102, 241, 0.16);
-  --shadow-modal: 0 24px 60px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(15, 23, 42, 0.05);
+  --shadow-modal: 0 24px 60px rgba(15, 23, 42, 0.2), 0 0 0 1px rgba(15, 23, 42, 0.05);
 
-  /* 코너 곡률 */
+  /* 곡률 */
+  --r-xs:   6px;
   --r-sm:   10px;
   --r-md:   16px;
   --r-lg:   24px;
   --r-pill: 9999px;
 
-  /* 폰트 패밀리 */
+  /* 폰트 */
   --font-head: 'Plus Jakarta Sans', 'Pretendard', sans-serif;
   --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* 트랜지션 베지어 */
+  /* 트랜지션 */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-snappy: cubic-bezier(0.4, 0, 0.2, 1);
@@ -72,6 +78,7 @@
   box-sizing: border-box;
   margin: 0; padding: 0;
   font-family: var(--font-body);
+  letter-spacing: -0.015em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -90,7 +97,7 @@ html, body {
 ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   1. 전체 앱 레이아웃 (100vh 고정)
+   1. 전체 앱 레이아웃
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .app-layout {
   display: flex;
@@ -125,7 +132,7 @@ html, body {
   margin-left: -280px;
 }
 
-/* 사이드바 헤더 (릴리 브랜드 영역) */
+/* 사이드바 헤더 */
 .sidebar-header {
   display: flex;
   align-items: center;
@@ -212,8 +219,8 @@ html, body {
   border: 1px solid var(--border);
   background: var(--bg-card2);
   color: var(--text-secondary);
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -274,16 +281,9 @@ html, body {
   box-shadow: 0 6px 22px rgba(99,102,241,0.38);
 }
 
-.btn-new-chat-main:active {
-  transform: translateY(0);
-}
+.btn-new-icon { font-size: 16px; line-height: 1; }
 
-.btn-new-icon {
-  font-size: 16px;
-  line-height: 1;
-}
-
-/* 히스토리 섹션 */
+/* 히스토리 섹션 헤더 & 컨트롤 */
 .sidebar-section-header {
   display: flex;
   align-items: center;
@@ -293,11 +293,17 @@ html, body {
 }
 
 .section-label {
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.5px;
+}
+
+.history-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .history-count-badge {
@@ -310,26 +316,47 @@ html, body {
   border: 1px solid var(--border);
 }
 
+.btn-clear-history-mini {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  padding: 3px 5px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-clear-history-mini:hover {
+  background: #FFF1F2;
+  border-color: #FECDD3;
+  color: var(--accent-pink);
+}
+
+/* 히스토리 목록 */
 .history-list-container {
   flex: 1;
   overflow-y: auto;
+  list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   padding-right: 2px;
 }
 
-/* 히스토리 아이템 */
 .history-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 11px;
+  padding: 10px 12px;
   border-radius: var(--r-sm);
   cursor: pointer;
   transition: all 0.18s;
   position: relative;
   border: 1px solid transparent;
+  gap: 8px;
 }
 
 .history-item:hover {
@@ -339,7 +366,8 @@ html, body {
 
 .history-item.active {
   background: var(--primary-soft);
-  border-color: rgba(99, 102, 241, 0.28);
+  border-color: rgba(99, 102, 241, 0.25);
+  border-left: 3px solid var(--primary);
 }
 
 .history-item.active .history-item-title {
@@ -358,7 +386,7 @@ html, body {
 .history-item-icon {
   font-size: 13px;
   flex-shrink: 0;
-  opacity: 0.75;
+  color: var(--primary);
 }
 
 .history-item-text {
@@ -368,70 +396,51 @@ html, body {
 }
 
 .history-item-title {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .history-item-time {
   font-size: 10.5px;
-  color: var(--text-muted);
+  color: var(--text-subtle);
   margin-top: 1px;
 }
 
-.btn-history-delete {
+.btn-history-delete-item {
   opacity: 0;
   border: none;
   background: transparent;
-  color: var(--text-muted);
-  font-size: 12px;
-  padding: 3px 6px;
-  border-radius: 4px;
+  color: var(--text-subtle);
+  padding: 4px 6px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: opacity 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
-.history-item:hover .btn-history-delete {
+.history-item:hover .btn-history-delete-item {
   opacity: 1;
 }
 
-.btn-history-delete:hover {
+.btn-history-delete-item:hover {
   color: var(--accent-pink);
   background: var(--accent-pink-soft);
 }
 
-/* 히스토리 비어있을 때 */
-.history-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 36px 12px;
+.history-empty-notice {
   text-align: center;
+  padding: 36px 12px;
   color: var(--text-muted);
-}
-
-.empty-icon {
-  font-size: 28px;
-  margin-bottom: 8px;
-  opacity: 0.6;
-}
-
-.empty-title {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: 4px;
-}
-
-.empty-desc {
-  font-size: 11px;
-  line-height: 1.45;
-  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 /* 사이드바 하단 도구 */
@@ -467,7 +476,7 @@ html, body {
 
 .tool-icon { font-size: 14px; }
 
-/* 사이드바 푸터 (유저 프로필) */
+/* 사이드바 푸터 */
 .sidebar-footer {
   flex-shrink: 0;
   padding: 12px 14px 16px;
@@ -536,13 +545,13 @@ html, body {
 }
 
 .btn-logout:hover {
-  background: var(--accent-pink-soft);
-  border-color: rgba(244,63,94,0.3);
+  background: #FFF1F2;
+  border-color: #FECDD3;
   color: var(--accent-pink);
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   3. 메인 영역 & 상단 탑바 (라이트 글래스)
+   3. 메인 영역 & 일반 헤더 (탑바)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .app-main {
   flex: 1;
@@ -556,18 +565,19 @@ html, body {
 
 /* 탑바 */
 .app-topbar {
-  height: 58px;
+  height: 64px;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
   z-index: 20;
-  gap: 12px;
+  gap: 16px;
+  position: relative;
 }
 
 .topbar-left {
@@ -613,20 +623,7 @@ html, body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 220px;
-}
-
-.session-engine-pill {
-  display: inline-flex;
-  align-items: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent-teal);
-  background: var(--accent-teal-soft);
-  border: 1px solid rgba(13,148,136,0.2);
-  padding: 2px 8px;
-  border-radius: var(--r-pill);
-  white-space: nowrap;
+  max-width: 180px;
 }
 
 .context-mode-pill {
@@ -642,27 +639,175 @@ html, body {
   white-space: nowrap;
 }
 
+/* [핵심 고도화] 헤더 중앙: 릴리 실시간 AI 디렉터 상태 위젯 */
+.topbar-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
+/* [강화] 릴리 라이브 상태 위젯 — 더 크고 선명하게 개선 */
+.lilly-live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--border);
+  padding: 7px 16px 7px 12px;
+  border-radius: var(--r-pill);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.07);
+  transition: all 0.25s var(--ease-smooth);
+  cursor: default;
+  user-select: none;
+}
+
+.status-live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+  animation: pulseGreen 2s infinite ease-in-out;
+  flex-shrink: 0;
+}
+
+@keyframes pulseGreen {
+  0%, 100% { transform: scale(0.9); opacity: 0.7; }
+  50%      { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px rgba(16, 185, 129, 0.7); }
+}
+
+.status-avatar-mini {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.status-live-text {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.status-stage-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  background: var(--bg-card2);
+  color: var(--text-muted);
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--border);
+}
+
+/* 릴리 생성 중 상태 (GENERATING) */
+.lilly-live-status-pill.generating {
+  border-color: rgba(99, 102, 241, 0.5);
+  background: linear-gradient(90deg, rgba(99,102,241,0.06) 0%, rgba(244,63,94,0.06) 100%);
+  box-shadow: 0 2px 12px rgba(99,102,241,0.18);
+}
+
+.lilly-live-status-pill.generating .status-live-dot {
+  background: var(--primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.35);
+  animation: pulseViolet 1s infinite ease-in-out;
+}
+
+@keyframes pulseViolet {
+  0%, 100% { transform: scale(0.85); opacity: 0.6; }
+  50%      { transform: scale(1.35); opacity: 1; box-shadow: 0 0 10px rgba(99, 102, 241, 0.8); }
+}
+
+.lilly-live-status-pill.generating .status-live-text {
+  color: var(--primary-light);
+  font-weight: 700;
+}
+
+.lilly-live-status-pill.generating .status-stage-tag {
+  background: var(--primary-grad);
+  color: #FFF;
+  border-color: transparent;
+  animation: tagShimmer 1.5s infinite;
+}
+
+/* 릴리 입력 감지 상태 (TYPING) */
+.lilly-live-status-pill.typing {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: rgba(245, 158, 11, 0.05);
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.12);
+}
+
+.lilly-live-status-pill.typing .status-live-dot {
+  background: var(--accent-amber);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35);
+  animation: pulseAmber 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseAmber {
+  0%, 100% { transform: scale(0.9); opacity: 0.7; }
+  50%      { transform: scale(1.3); opacity: 1; box-shadow: 0 0 8px rgba(245, 158, 11, 0.7); }
+}
+
+.lilly-live-status-pill.typing .status-live-text {
+  color: #B45309;
+  font-weight: 700;
+}
+
+.lilly-live-status-pill.typing .status-stage-tag {
+  background: rgba(245, 158, 11, 0.15);
+  color: #B45309;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* 릴리 기획 완료 상태 (COMPLETE) */
+.lilly-live-status-pill.complete {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: rgba(16, 185, 129, 0.06);
+  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
+}
+
+.lilly-live-status-pill.complete .status-live-dot {
+  background: var(--accent-green);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.4);
+}
+
+.lilly-live-status-pill.complete .status-live-text {
+  color: #047857;
+  font-weight: 700;
+}
+
+.lilly-live-status-pill.complete .status-stage-tag {
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
 /* 탑바 우측 */
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
 .btn-topbar-logs {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: var(--bg-card2);
   border: 1px solid var(--border);
   color: var(--text-secondary);
-  padding: 6px 12px;
+  padding: 7px 13px;
   border-radius: var(--r-sm);
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  height: 34px;
 }
 
 .btn-topbar-logs:hover {
@@ -678,15 +823,18 @@ html, body {
 }
 
 .btn-topbar-login {
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   background: #FFFFFF;
   color: var(--text-secondary);
-  padding: 6px 14px;
+  padding: 0 15px;
+  height: 34px;
   border-radius: var(--r-sm);
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-topbar-login:hover {
@@ -699,13 +847,16 @@ html, body {
   border: none;
   background: var(--primary-grad);
   color: #FFF;
-  padding: 6px 14px;
+  padding: 0 16px;
+  height: 34px;
   border-radius: var(--r-sm);
   font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(99,102,241,0.25);
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
 }
 
 .btn-topbar-signup:hover {
@@ -713,19 +864,28 @@ html, body {
   box-shadow: 0 4px 14px rgba(99,102,241,0.35);
 }
 
-.user-profile-badge {
+/* [핵심 고도화] 헤더 로그인 상태 조화로운 프로필 래퍼 */
+.topbar-user-profile-wrap {
   display: flex;
   align-items: center;
-  gap: 7px;
-  background: var(--bg-card2);
-  border: 1px solid var(--border);
-  padding: 4px 10px 4px 5px;
-  border-radius: var(--r-pill);
+  gap: 8px;
 }
 
-.topbar-user-avatar {
-  width: 24px;
-  height: 24px;
+.user-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  padding: 3px 10px 3px 4px;
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-xs);
+  height: 34px;
+}
+
+.user-avatar-circle {
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: var(--primary-grad);
   color: #FFF;
@@ -734,25 +894,55 @@ html, body {
   justify-content: center;
   font-size: 11px;
   font-weight: 800;
+  box-shadow: 0 1px 4px rgba(99,102,241,0.3);
 }
 
-.topbar-username-text {
+.user-info-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-display-name {
   font-size: 12.5px;
   font-weight: 700;
   color: var(--text-primary);
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.btn-topbar-logout {
-  border: none;
-  background: transparent;
-  color: var(--text-muted);
+.user-role-tag {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--accent-teal);
+  background: var(--accent-teal-soft);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.btn-topbar-logout-unified {
+  border: 1px solid var(--border);
+  background: #FFFFFF;
+  color: var(--text-secondary);
+  height: 34px;
+  padding: 0 11px;
+  border-radius: var(--r-sm);
   font-size: 12px;
-  cursor: pointer;
   font-weight: 600;
-  transition: color 0.2s;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s;
 }
 
-.btn-topbar-logout:hover { color: var(--accent-pink); }
+.btn-topbar-logout-unified:hover {
+  background: #FFF1F2;
+  border-color: #FECDD3;
+  color: var(--accent-pink);
+}
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    4. 채팅 뷰포트 & 웰컴 히어로
@@ -768,13 +958,13 @@ html, body {
 .chat-messages-container {
   width: 100%;
   max-width: 860px;
-  padding: 32px 20px 16px;
+  padding: 28px 20px 16px;
   display: flex;
   flex-direction: column;
   gap: 22px;
 }
 
-/* 웰컴 히어로 (밝고 화사한 스타일) */
+/* 웰컴 히어로 */
 .welcome-hero-container {
   display: flex;
   flex-direction: column;
@@ -917,7 +1107,8 @@ html, body {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    5. 메시지 버블 (유저 vs 릴리 AI)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.chat-message-row {
+.chat-message-row,
+.message-row {
   display: flex;
   gap: 14px;
   width: 100%;
@@ -929,8 +1120,8 @@ html, body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 유저 메시지 */
-.chat-message-row.user {
+.chat-message-row.user,
+.message-row.user {
   justify-content: flex-end;
 }
 
@@ -947,8 +1138,8 @@ html, body {
   word-break: break-word;
 }
 
-/* 릴리 AI 메시지 */
-.chat-message-row.assistant {
+.chat-message-row.ai,
+.message-row.ai {
   justify-content: flex-start;
   align-items: flex-start;
 }
@@ -1035,19 +1226,11 @@ html, body {
   word-break: break-word;
 }
 
-/* 대본 씬 & 훅 포맷팅 스타일 */
 .script-content-body strong {
   color: #1E1B4B;
   font-weight: 700;
 }
 
-.script-content-body hr {
-  border: none;
-  border-top: 1px dashed var(--border);
-  margin: 16px 0;
-}
-
-/* 스트리밍 커서 */
 .typing-cursor {
   display: inline-block;
   width: 2.5px;
@@ -1064,7 +1247,6 @@ html, body {
   50%       { opacity: 0; }
 }
 
-/* 로딩 버블 */
 .loading-thinking-box {
   display: flex;
   align-items: center;
@@ -1089,47 +1271,8 @@ html, body {
   50%      { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px rgba(99,102,241,0.6); }
 }
 
-.thinking-text {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-/* 에러 메시지 카드 */
-.error-message-card {
-  background: #FFF1F2;
-  border: 1px solid #FECDD3;
-  padding: 14px 18px;
-  border-radius: var(--r-md);
-  color: #BE123C;
-  font-size: 13.5px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-}
-
-.btn-error-retry {
-  border: 1px solid #F43F5E;
-  background: #FFFFFF;
-  color: #E11D48;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-
-.btn-error-retry:hover {
-  background: #E11D48;
-  color: #FFF;
-}
-
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   6. 하단 고정 채팅 입력 영역 (ChatGPT급 클린 폼)
+   6. 하단 고정 채팅 입력 영역 (통일된 컨트롤 툴바)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .chat-bottom-section {
   flex-shrink: 0;
@@ -1138,12 +1281,11 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(180deg, transparent 0%, rgba(248,250,252,0.9) 30%, #F8FAFC 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(248,250,252,0.92) 25%, #F8FAFC 100%);
   position: relative;
   z-index: 10;
 }
 
-/* 빠른 템플릿 칩 슬라이더 */
 .preset-chips-slider {
   display: flex;
   align-items: center;
@@ -1172,7 +1314,7 @@ html, body {
   white-space: nowrap;
   transition: all 0.18s;
   flex-shrink: 0;
-  box-shadow: 0 1px 2px rgba(15,23,42,0.03);
+  box-shadow: var(--shadow-xs);
 }
 
 .preset-chip-btn:hover {
@@ -1184,7 +1326,6 @@ html, body {
 
 .chip-emoji { font-size: 12px; }
 
-/* 입력창 메인 래퍼 */
 .chat-input-wrapper {
   position: relative;
   width: 100%;
@@ -1193,7 +1334,7 @@ html, body {
   border: 1.5px solid var(--border);
   border-radius: var(--r-lg);
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-  padding: 14px 18px 12px;
+  padding: 12px 18px 12px;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -1202,7 +1343,6 @@ html, body {
   box-shadow: 0 12px 36px rgba(99, 102, 241, 0.14);
 }
 
-/* 로그인 필요 시 잠금 오버레이 */
 .login-required-gate {
   position: absolute;
   inset: 0;
@@ -1253,7 +1393,7 @@ html, body {
   box-shadow: 0 6px 20px rgba(99,102,241,0.38);
 }
 
-/* AI 컨트롤 툴바 */
+/* [핵심 고도화] 조화롭고 완벽한 폰트/버튼의 AI 컨트롤 툴바 */
 .ai-controls-toolbar {
   display: flex;
   align-items: center;
@@ -1264,55 +1404,96 @@ html, body {
   flex-wrap: wrap;
 }
 
-.control-group {
+.control-chip-group {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
-.ctrl-label {
-  font-size: 11.5px;
+.control-chip-label {
+  font-size: 12px;
   font-weight: 700;
   color: var(--text-muted);
   white-space: nowrap;
 }
 
-.custom-select {
+.custom-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.custom-select-styled {
+  appearance: none;
+  -webkit-appearance: none;
   border: 1px solid var(--border);
   background: #F8FAFC;
   color: var(--text-secondary);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 7px;
+  padding: 5px 24px 5px 10px;
+  border-radius: 8px;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.2s;
+  height: 32px;
+  transition: all 0.2s;
 }
 
-.custom-select:focus {
+.custom-select-styled:hover {
+  background: #FFFFFF;
+  border-color: var(--border-hover);
+}
+
+.custom-select-styled:focus {
   border-color: var(--primary);
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
   color: var(--text-primary);
 }
 
-.btn-enhance-magic {
-  border: 1px solid rgba(99, 102, 241, 0.35);
+.select-chevron {
+  position: absolute;
+  right: 8px;
+  font-size: 10px;
+  color: var(--text-subtle);
+  pointer-events: none;
+}
+
+.control-group-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 2px;
+}
+
+.control-toolbar-spacer {
+  flex: 1;
+}
+
+.btn-enhance-magic-styled {
+  border: 1px solid rgba(99, 102, 241, 0.3);
   background: rgba(99, 102, 241, 0.08);
   color: #4F46E5;
-  padding: 4px 11px;
-  border-radius: 7px;
-  font-size: 11.5px;
+  padding: 0 12px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.btn-enhance-magic:hover {
+.btn-enhance-magic-styled:hover {
   background: rgba(99, 102, 241, 0.16);
   border-color: var(--primary);
   transform: translateY(-1px);
 }
+
+.magic-sparkle { font-size: 13px; }
 
 /* 텍스트에어리어 */
 .textarea-wrapper {
@@ -1331,7 +1512,7 @@ html, body {
   line-height: 1.6;
   background: transparent;
   max-height: 130px;
-  min-height: 50px;
+  min-height: 52px;
   caret-color: var(--primary);
 }
 
@@ -1349,7 +1530,6 @@ html, body {
   color: var(--text-muted);
 }
 
-/* 전송 버튼 */
 .btn-send {
   display: inline-flex;
   align-items: center;
@@ -1395,17 +1575,13 @@ html, body {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   7. 모달 (인증 / DB 로그)
+   7. 모달 (인증 / DB 로그) & 딥-다이브 실시간 상태
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .auth-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.55);
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.52);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: none;
@@ -1425,7 +1601,7 @@ html, body {
   border-radius: var(--r-lg);
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(15, 23, 42, 0.06);
   border: 1px solid var(--border);
-  padding: 34px 30px;
+  padding: 32px 28px;
   animation: modalPop 0.28s var(--ease-smooth);
 }
 
@@ -1440,7 +1616,7 @@ html, body {
   border: 1px solid var(--border);
   background: #F8FAFC;
   color: var(--text-muted);
-  width: 30px; height: 30px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   font-size: 14px;
   font-weight: 700;
@@ -1457,15 +1633,14 @@ html, body {
   border-color: var(--border-hover);
 }
 
-/* 인증 브랜드 영역 */
 .auth-brand {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .auth-mascot-wrapper {
   display: inline-block;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   filter: drop-shadow(0 6px 16px rgba(99,102,241,0.25));
 }
 
@@ -1474,7 +1649,7 @@ html, body {
   font-size: 22px;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   letter-spacing: -0.4px;
 }
 
@@ -1484,13 +1659,12 @@ html, body {
   line-height: 1.45;
 }
 
-/* 탭 */
 .auth-tabs {
   display: flex;
   background: #F1F5F9;
   border-radius: var(--r-sm);
   padding: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .auth-tab-btn {
@@ -1512,20 +1686,70 @@ html, body {
   box-shadow: var(--shadow-sm);
 }
 
-/* 폼 */
+/* [고도화] 빠른 계정 채우기 칩 */
+.quick-demo-chip-bar {
+  margin-bottom: 14px;
+}
+
+.btn-quick-fill {
+  width: 100%;
+  border: 1px dashed rgba(99, 102, 241, 0.4);
+  background: rgba(99, 102, 241, 0.05);
+  color: var(--primary-light);
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+
+.btn-quick-fill:hover {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.chip-bolt { color: var(--accent-amber); font-weight: 800; }
+
+/* [고도화] 실시간 입력 폼 & 유효성 시각화 */
 .form-group { margin-bottom: 14px; }
 
-.form-group label {
-  display: block;
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--text-secondary);
+.form-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 6px;
 }
 
-.form-group input {
+.form-group label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.field-feedback-text {
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.field-feedback-text.valid { color: var(--accent-green); }
+.field-feedback-text.invalid { color: var(--accent-pink); }
+
+.input-with-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon-wrap input {
   width: 100%;
-  padding: 11px 14px;
+  padding: 11px 40px 11px 14px;
   background: #FFFFFF;
   border: 1.5px solid var(--border);
   border-radius: var(--r-sm);
@@ -1535,13 +1759,85 @@ html, body {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group input:focus {
-  background: #FFFFFF;
+.input-with-icon-wrap input:focus {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
 }
 
-.form-group input::placeholder { color: #94A3B8; }
+.input-with-icon-wrap input.valid {
+  border-color: var(--accent-green);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+}
+
+.input-with-icon-wrap input.invalid {
+  border-color: var(--accent-pink);
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.12);
+}
+
+.input-with-icon-wrap input::placeholder { color: #94A3B8; }
+
+.input-status-icon {
+  position: absolute;
+  right: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.input-status-icon.valid { color: var(--accent-green); }
+.input-status-icon.invalid { color: var(--accent-pink); }
+
+/* 눈 아이콘 토글 버튼 */
+.btn-toggle-eye {
+  position: absolute;
+  right: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.btn-toggle-eye:hover { color: var(--text-primary); }
+
+/* 비밀번호 강도 바 */
+.strength-bar-wrap {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.strength-bar-track {
+  width: 100%;
+  height: 4px;
+  background: #E2E8F0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-bar-fill.weak { width: 33%; background-color: var(--accent-pink); }
+.strength-bar-fill.medium { width: 66%; background-color: var(--accent-amber); }
+.strength-bar-fill.strong { width: 100%; background-color: var(--accent-green); }
+
+.strength-label-text {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
 
 .auth-error {
   color: var(--accent-pink);
@@ -1564,19 +1860,34 @@ html, body {
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(99,102,241,0.28);
   transition: all 0.2s;
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-.btn-primary-auth::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-  pointer-events: none;
+.btn-primary-auth:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 22px rgba(99,102,241,0.38);
 }
 
-.btn-primary-auth:hover { transform: translateY(-1.5px); box-shadow: 0 6px 22px rgba(99,102,241,0.38); }
+.btn-primary-auth:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 .auth-divider {
   display: flex;
@@ -1614,8 +1925,8 @@ html, body {
   color: var(--primary-light);
 }
 
-/* DB 로그 모달 (밝은 톤) */
-.db-log-card { max-width: 720px !important; padding: 28px !important; }
+/* DB 로그 모달 */
+.db-log-card { max-width: 760px !important; padding: 28px !important; }
 
 .db-modal-header {
   display: flex;
@@ -1708,37 +2019,8 @@ html, body {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   8. 반응형 미디어 쿼리
+   8. 릴리 캐릭터 애니메이션 & 상호작용 말풍선
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-@media (max-width: 900px) {
-  .app-sidebar {
-    position: absolute;
-    top: 0; bottom: 0; left: 0;
-    margin-left: -280px;
-    box-shadow: 4px 0 24px rgba(15, 23, 42, 0.12);
-  }
-
-  .app-sidebar.open {
-    margin-left: 0;
-  }
-
-  .btn-open-sidebar {
-    display: flex !important;
-  }
-
-  .starter-cards-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .chat-messages-container {
-    padding: 20px 14px 10px;
-  }
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   9. 릴리 캐릭터 애니메이션 & 상호작용 말풍선
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-/* 헤일로 회전 */
 .halo-ring {
   transform-origin: 60px 60px;
   animation: rotateHalo 10s linear infinite;
@@ -1749,7 +2031,6 @@ html, body {
   to   { transform: rotate(360deg); }
 }
 
-/* 눈 깜빡임 */
 .lilly-eye {
   transform-origin: center;
   animation: eyeBlink 3.8s ease-in-out infinite;
@@ -1760,9 +2041,8 @@ html, body {
   96%           { transform: scaleY(0.12); }
 }
 
-/* 슬레이트 찰칵 호버 효과 */
 .brand-mascot-card:hover .slate-bar,
-.hero-mascot-box:hover .slate-bar {
+.hero-avatar-wrap:hover .slate-bar {
   animation: slateClap 0.45s ease-in-out;
 }
 
@@ -1772,7 +2052,6 @@ html, body {
   70%      { transform: rotate(2deg); }
 }
 
-/* 점프 & 360 스핀 클릭 모션 */
 .lilly-mascot-svg.jump-spin,
 .lilly-hero-svg.jump-spin {
   animation: jumpSpin 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -1785,7 +2064,6 @@ html, body {
   100% { transform: translateY(0) rotate(360deg) scale(1); }
 }
 
-/* 생각 중 펄스 */
 .lilly-mascot-svg.thinking-pulse,
 .lilly-hero-svg.thinking-pulse {
   animation: mascotThink 1.2s ease-in-out infinite;
@@ -1796,7 +2074,6 @@ html, body {
   50%      { transform: scale(1.08) translateY(-3px); filter: drop-shadow(0 8px 22px rgba(99,102,241,0.55)); }
 }
 
-/* 마스코트 상호작용 힌트 뱃지 */
 .mascot-click-hint {
   display: inline-flex;
   align-items: center;
@@ -1826,7 +2103,6 @@ html, body {
   50%      { transform: translateY(-4px); }
 }
 
-/* 릴리 상호작용 말풍선 (캐릭터 발화) */
 .lilly-speech-bubble {
   position: absolute;
   top: -52px;
@@ -1864,7 +2140,7 @@ html, body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* 토스트 팝업 (알림 및 발화 메시지) */
+/* 토스트 팝업 */
 .toast-popup {
   position: fixed;
   bottom: 28px;
@@ -1897,7 +2173,7 @@ html, body {
   pointer-events: auto;
 }
 
-/* 파티클 캔버스 레이어 */
+/* 파티클 레이어 */
 .particle-canvas-layer {
   position: fixed;
   inset: 0;
@@ -1917,4 +2193,353 @@ html, body {
 @keyframes confettiFall {
   0%   { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
   100% { opacity: 0; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.3); }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   9. [전면 개편] 반응형 미디어 쿼리 — 모바일/태블릿/데스크톱 완벽 지원
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* ── 스트리밍 중 입력 잠금 (시각적 비활성화) ── */
+.chat-input-wrapper.locked {
+  opacity: 0.75;
+  pointer-events: none;
+  position: relative;
+}
+
+.chat-input-wrapper.locked::after {
+  content: "릴리가 기획 중입니다... ⚡ 완성 후 입력해 주세요";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 250, 252, 0.85);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: var(--r-lg);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-light);
+  z-index: 20;
+  text-align: center;
+  padding: 0 20px;
+  pointer-events: none;
+}
+
+/* 전송 버튼 중단 상태 */
+.btn-send.btn-stop {
+  background: linear-gradient(135deg, #F43F5E 0%, #FB7185 100%);
+  box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35);
+  animation: stopPulse 1.5s infinite;
+}
+
+@keyframes stopPulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(244, 63, 94, 0.35); }
+  50%      { box-shadow: 0 4px 24px rgba(244, 63, 94, 0.6); }
+}
+
+/* 스트리밍 중 메시지 열 애니메이션 — 커서 깜빡임 강화 */
+.stream-text { white-space: pre-wrap; word-break: break-word; }
+
+/* ── 태블릿 (≤1024px) ── */
+@media (max-width: 1024px) {
+  .lilly-live-status-pill {
+    padding: 6px 12px 6px 10px;
+  }
+
+  .status-live-text {
+    font-size: 12.5px;
+  }
+
+  .topbar-session-badge .context-mode-pill {
+    display: none;
+  }
+
+  .btn-topbar-logs span:last-child {
+    display: none;
+  }
+
+  .user-role-tag {
+    display: none;
+  }
+
+  .starter-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+/* ── 태블릿 Portrait / 큰 폰 (≤900px) ── */
+@media (max-width: 900px) {
+  html, body { overflow: auto; }
+
+  .app-layout {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .app-main {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .chat-viewport {
+    overflow-y: visible;
+  }
+
+  .app-sidebar {
+    position: fixed;
+    top: 0; bottom: 0; left: 0;
+    z-index: 200;
+    margin-left: -300px;
+    box-shadow: 4px 0 32px rgba(15, 23, 42, 0.16);
+    transition: margin-left 0.32s var(--ease-snappy);
+  }
+
+  .app-sidebar.open {
+    margin-left: 0;
+  }
+
+  /* 사이드바 열렸을 때 백드롭 dim */
+  .app-sidebar.open::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    left: 280px;
+    background: rgba(15, 23, 42, 0.4);
+    z-index: -1;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .btn-open-sidebar {
+    display: flex !important;
+  }
+
+  /* 탑바 중앙 상태 위젯 → 작게 유지 */
+  .topbar-center {
+    flex: 0 1 auto;
+    overflow: hidden;
+  }
+
+  .lilly-live-status-pill {
+    padding: 5px 10px 5px 8px;
+    gap: 6px;
+  }
+
+  .status-live-text {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 11.5px;
+  }
+
+  .status-stage-tag {
+    display: none;
+  }
+
+  .topbar-session-badge {
+    display: none;
+  }
+
+  .session-title { display: none; }
+
+  .user-display-name { max-width: 60px; }
+  .user-role-tag { display: none; }
+  .btn-topbar-logs { display: none; }
+
+  .starter-cards-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .chat-messages-container {
+    padding: 20px 14px 10px;
+  }
+
+  .chat-input-wrapper {
+    border-radius: var(--r-md);
+    padding: 10px 14px 10px;
+  }
+
+  .ai-controls-toolbar {
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+
+  .btn-enhance-magic-styled span:last-child {
+    display: none;
+  }
+
+  .hero-title { font-size: 22px; }
+  .hero-subtitle { font-size: 13.5px; }
+
+  .script-content-body {
+    padding: 14px 16px;
+    font-size: 13.5px;
+  }
+
+  .script-header-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+
+  .message-bubble { font-size: 13.5px; }
+
+  /* 프리셋 칩 슬라이더 소형화 */
+  .preset-chip-btn {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}
+
+/* ── 모바일 (≤640px) ── */
+@media (max-width: 640px) {
+  html, body { overflow: auto; }
+
+  .app-layout { flex-direction: column; height: auto; min-height: 100vh; }
+
+  .app-main { height: auto; min-height: 100svh; }
+
+  .app-topbar {
+    height: 56px;
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  .topbar-center { display: none; }
+
+  /* 탑바 우측 — 회원가입 버튼 숨김 */
+  .btn-topbar-signup { display: none; }
+  .btn-topbar-logs { display: none; }
+  .user-role-tag { display: none; }
+  .user-display-name { max-width: 44px; font-size: 11px; }
+
+  .btn-topbar-login {
+    font-size: 11.5px;
+    padding: 0 10px;
+    height: 30px;
+  }
+
+  .btn-topbar-logout-unified {
+    font-size: 11px;
+    padding: 0 8px;
+    height: 30px;
+  }
+  .btn-topbar-logout-unified span { display: none; }
+
+  /* 채팅 영역 */
+  .chat-messages-container {
+    padding: 16px 10px 6px;
+    gap: 16px;
+  }
+
+  .starter-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .starter-card { padding: 12px 14px; }
+  .starter-card-title { font-size: 13px; }
+  .starter-card-desc { font-size: 11.5px; }
+
+  .hero-mascot-box { margin-bottom: 16px; }
+  .hero-title { font-size: 19px; margin-bottom: 8px; }
+  .hero-subtitle { font-size: 13px; margin-bottom: 20px; }
+
+  /* 하단 입력 영역 */
+  .chat-bottom-section { padding: 8px 10px 16px; }
+
+  .preset-chips-slider { gap: 6px; }
+  .preset-chip-btn { font-size: 11px; padding: 4px 9px; }
+  .chip-emoji { font-size: 11px; }
+
+  .chat-input-wrapper {
+    border-radius: var(--r-md);
+    padding: 9px 12px 9px;
+  }
+
+  /* AI 컨트롤 툴바 — 모바일 수직 배치 */
+  .ai-controls-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-bottom: 8px;
+    margin-bottom: 6px;
+  }
+
+  .control-chip-label { font-size: 11px; }
+  .custom-select-styled { font-size: 11px; height: 28px; padding: 3px 22px 3px 8px; }
+
+  .btn-enhance-magic-styled {
+    font-size: 11.5px;
+    padding: 5px 10px;
+    height: 28px;
+  }
+  .btn-enhance-magic-styled span:last-child { display: none; }
+
+  /* 텍스트에어리어 */
+  #user-input { font-size: 14px; }
+
+  /* 메시지 버블 */
+  .script-content-body {
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .script-header-bar { padding: 9px 12px; }
+  .script-tag-title { font-size: 12px; }
+  .btn-card-action { font-size: 11px; padding: 4px 8px; }
+
+  .lilly-msg-avatar svg { width: 24px; height: 24px; }
+
+  .loading-thinking-box {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  /* 인증 모달 — 모바일 최적화 */
+  .auth-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 100%;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    max-height: 92vh;
+    overflow-y: auto;
+    animation: slideUpMobile 0.35s var(--ease-spring);
+  }
+
+  @keyframes slideUpMobile {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+
+  /* DB 모달 — 모바일 */
+  .db-log-card {
+    width: 100%;
+    max-width: 100%;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  /* 사이드바 푸터 — 모바일 가독성 */
+  .sidebar-footer { padding: 10px 12px; }
+  .user-name { font-size: 12px; }
+  .user-status-pill { font-size: 10.5px; }
+}
+
+/* ── 아주 작은 폰 (≤375px) ── */
+@media (max-width: 375px) {
+  .hero-title { font-size: 17px; }
+  .hero-subtitle { font-size: 12.5px; }
+  .btn-topbar-login { padding: 0 8px; font-size: 11px; }
+  .app-topbar { padding: 0 10px; }
+  .chat-messages-container { padding: 12px 8px 6px; }
+  .chat-bottom-section { padding: 6px 8px 12px; }
 }
