@@ -39,12 +39,43 @@ document.addEventListener("DOMContentLoaded", () => {
     setLillyHeaderStatus("idle");
 });
 
-// 키보드 단축키 설정 (사이드바 토글 Ctrl+B / Cmd+B)
+// 키보드 단축키 및 모달/오버레이 글로벌 이벤트 바인딩
 function setupShortcuts() {
     window.addEventListener("keydown", (e) => {
+        // 사이드바 토글 (Ctrl+B / Cmd+B)
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
             e.preventDefault();
             toggleSidebar();
+        }
+        // ESC 키로 열린 모달 닫기
+        if (e.key === "Escape") {
+            closeAuthModal();
+            closeDbModal();
+            closeSidebarMobile();
+        }
+    });
+
+    // 모달 배경 클릭 시 닫기 바인딩
+    ["auth-modal", "db-modal"].forEach(modalId => {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.addEventListener("click", (e) => {
+                if (e.target === modal) {
+                    if (modalId === "auth-modal") closeAuthModal();
+                    if (modalId === "db-modal") closeDbModal();
+                }
+            });
+        }
+    });
+
+    // 화면 크기 변경 시 상태 자동 보정
+    window.addEventListener("resize", () => {
+        const sidebar = document.getElementById("sidebar") || document.getElementById("app-sidebar");
+        const backdrop = document.getElementById("sidebar-backdrop");
+        if (window.innerWidth > 900) {
+            if (sidebar) sidebar.classList.remove("open");
+            if (backdrop) backdrop.classList.remove("active");
+            document.body.classList.remove("sidebar-open");
         }
     });
 }
@@ -368,12 +399,23 @@ function checkAuthState() {
 function openAuthModal(tab = "login") {
     switchAuthTab(tab);
     const modal = document.getElementById("auth-modal");
-    if (modal) modal.style.display = "flex";
+    if (modal) {
+        modal.style.display = "flex";
+        document.body.classList.add("modal-open");
+        // 첫 번째 입력 필드로 자동 포커스
+        setTimeout(() => {
+            const input = document.getElementById("username");
+            if (input) input.focus();
+        }, 80);
+    }
 }
 
 function closeAuthModal() {
     const modal = document.getElementById("auth-modal");
-    if (modal) modal.style.display = "none";
+    if (modal) {
+        modal.style.display = "none";
+        document.body.classList.remove("modal-open");
+    }
 }
 
 function switchAuthTab(tab) {
@@ -959,6 +1001,8 @@ function removeMessage(id) {
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    7. 마스코트 인터랙션 (점프 스핀 + 대사 말풍선 + 폭죽 파티클)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+let speechBubbleTimer = null;
+
 function triggerMascotClick(event) {
     // 모든 릴리 마스코트 점프 스핀
     const mascots = document.querySelectorAll(".lilly-mascot-svg, .lilly-hero-svg, #main-mascot");
@@ -973,21 +1017,32 @@ function triggerMascotClick(event) {
     const clickY = (event && event.clientY) ? event.clientY : 180;
     createConfettiEffect(clickX, clickY);
 
-    // 릴리의 풍부한 숏폼/릴스 꿀팁 대사
+    // 릴리의 풍부한 숏폼/릴스 바이럴 꿀팁 대사 세트
     const quotes = [
         "3초 안에 시선을 뺏는 첫 씬이 바이럴의 90%예요! 🎬",
         "호기심을 자극하는 질문형 훅으로 시작하면 이탈률이 확 줄어요! ✨",
         "시청자가 끝까지 보게 만드는 반전 복선을 심어드릴게요! 🚀",
-        "저장하고 나중에 다시 보게 만드는 체크리스트를 넣으세요! 💾",
+        "저장하고 나중에 다시 보게 만드는 체크리스트를 꼭 넣으세요! 💾",
         "댓글을 부르는 찬반 질문 CTA를 마지막 컷에 배치해 보세요! 💬",
         "지금 인스타 트렌드 탭에서 급상승 중인 릴스 음원을 입혀보세요! 🎵",
         "궁금한 아이디어를 아래 입력창에 편하게 한 줄만 적어주세요! 💡",
-        "대본이 완성되면 복사 버튼으로 캡컷에 바로 붙여넣을 수 있어요! 📋"
+        "대본이 완성되면 복사 버튼으로 캡컷에 바로 붙여넣을 수 있어요! 📋",
+        "썸네일 텍스트는 7글자 이내로 큼직하게 넣는 게 국룰이에요! 🔍",
+        "초반 1초에 손가락 제스처나 얼굴 표정을 크게 쓰면 시선이 고정돼요! 👀"
     ];
     const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 
-    showToast(`릴리: '${randomQuote}'`);
+    showToast(`릴리 디렉터: "${randomQuote}"`);
     showMascotSpeechBubble(randomQuote);
+
+    // 탑바 상태 위젯 피드백
+    const topbarPill = document.getElementById("topbar-lilly-live-status");
+    if (topbarPill) {
+        topbarPill.classList.add("typing");
+        setTimeout(() => {
+            if (!isGenerating) topbarPill.classList.remove("typing");
+        }, 1800);
+    }
 
     const badges = document.querySelectorAll(".mascot-badge-dot, #mascot-emotion-badge");
     badges.forEach(b => {
@@ -1010,7 +1065,11 @@ function showMascotSpeechBubble(text) {
         bubble.classList.remove("show");
         void bubble.offsetWidth;
         bubble.classList.add("show");
-        setTimeout(() => { bubble.classList.remove("show"); }, 3400);
+
+        if (speechBubbleTimer) clearTimeout(speechBubbleTimer);
+        speechBubbleTimer = setTimeout(() => {
+            bubble.classList.remove("show");
+        }, 3600);
     }
 }
 
@@ -1031,6 +1090,7 @@ function setMascotThinking(isThinking) {
 function toggleSidebar() {
     const sidebar = document.getElementById("sidebar") || document.getElementById("app-sidebar");
     const openBtn = document.getElementById("btn-sidebar-open");
+    const backdrop = document.getElementById("sidebar-backdrop");
     if (!sidebar) return;
 
     // 화면 너비에 따라 .collapsed (데스크톱) 또는 .open (모바일) 클래스 구분 사용
@@ -1038,11 +1098,24 @@ function toggleSidebar() {
         sidebar.classList.toggle("open");
         const isOpen = sidebar.classList.contains("open");
         if (openBtn) openBtn.style.display = isOpen ? "none" : "flex";
+        if (backdrop) backdrop.classList.toggle("active", isOpen);
+        document.body.classList.toggle("sidebar-open", isOpen);
     } else {
         sidebar.classList.toggle("collapsed");
         const isCollapsed = sidebar.classList.contains("collapsed");
         if (openBtn) openBtn.style.display = isCollapsed ? "flex" : "none";
     }
+}
+
+function closeSidebarMobile() {
+    const sidebar = document.getElementById("sidebar") || document.getElementById("app-sidebar");
+    const openBtn = document.getElementById("btn-sidebar-open");
+    const backdrop = document.getElementById("sidebar-backdrop");
+
+    if (sidebar) sidebar.classList.remove("open");
+    if (backdrop) backdrop.classList.remove("active");
+    document.body.classList.remove("sidebar-open");
+    if (openBtn && window.innerWidth <= 900) openBtn.style.display = "flex";
 }
 
 function enhancePromptWithMagic() {
@@ -1134,12 +1207,16 @@ function openDbModal() {
     const modal = document.getElementById("db-modal");
     if (!modal) return;
     modal.style.display = "flex";
+    document.body.classList.add("modal-open");
     renderDbLogs();
 }
 
 function closeDbModal() {
     const modal = document.getElementById("db-modal");
-    if (modal) modal.style.display = "none";
+    if (modal) {
+        modal.style.display = "none";
+        document.body.classList.remove("modal-open");
+    }
 }
 
 function switchDbTab(tab) {
@@ -1237,16 +1314,47 @@ function clearDbLogs() {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 let toastTimer = null;
 function showToast(message) {
-    const toast = document.getElementById("toast");
-    if (!toast) return;
+    if (!message) return;
 
-    toast.innerText = message;
-    toast.classList.add("show");
+    const container = document.getElementById("toast-container");
+    const legacyToast = document.getElementById("toast");
 
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2800);
+    // 1) 스택형 토스트 컨테이너가 있는 경우
+    if (container) {
+        // 최대 3개 초과 시 가장 오래된 토스트 제거
+        const existingToasts = container.querySelectorAll(".toast-item");
+        if (existingToasts.length >= 3) {
+            existingToasts[0].remove();
+        }
+
+        const item = document.createElement("div");
+        item.className = "toast-item";
+        item.innerText = message;
+        container.appendChild(item);
+
+        // 강제 리플로우 후 표시 애니메이션
+        void item.offsetWidth;
+        item.classList.add("show");
+
+        setTimeout(() => {
+            item.classList.remove("show");
+            setTimeout(() => {
+                if (item.parentNode) item.remove();
+            }, 300);
+        }, 2800);
+        return;
+    }
+
+    // 2) 하위 호환 레거시 토스트 요소
+    if (legacyToast) {
+        legacyToast.innerText = message;
+        legacyToast.classList.add("show");
+
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            legacyToast.classList.remove("show");
+        }, 2800);
+    }
 }
 
 function escapeHtml(text) {

@@ -1579,17 +1579,20 @@ html, body {
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .auth-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100%; height: 100%;
-  background: rgba(15, 23, 42, 0.52);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 99999;
-  padding: 20px;
+  padding: 24px 16px;
   box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .auth-card {
@@ -1599,14 +1602,16 @@ html, body {
   max-width: 440px;
   margin: auto;
   border-radius: var(--r-lg);
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24), 0 0 0 1px rgba(15, 23, 42, 0.06);
   border: 1px solid var(--border);
   padding: 32px 28px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
   animation: modalPop 0.28s var(--ease-smooth);
 }
 
 @keyframes modalPop {
-  from { opacity: 0; transform: scale(0.92) translateY(14px); }
+  from { opacity: 0; transform: scale(0.94) translateY(14px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
@@ -1616,15 +1621,16 @@ html, body {
   border: 1px solid var(--border);
   background: #F8FAFC;
   color: var(--text-muted);
-  width: 32px; height: 32px;
+  width: 36px; height: 36px;
   border-radius: 50%;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  z-index: 10;
 }
 
 .btn-modal-close:hover {
@@ -2105,22 +2111,28 @@ html, body {
 
 .lilly-speech-bubble {
   position: absolute;
-  top: -52px;
+  bottom: calc(100% + 14px);
+  top: auto;
   left: 50%;
-  transform: translateX(-50%) translateY(8px);
+  transform: translateX(-50%) translateY(10px);
   background: #FFFFFF;
   border: 1.5px solid var(--primary);
   color: #0F172A;
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 1.45;
   font-weight: 700;
-  padding: 8px 16px;
-  border-radius: 14px;
-  box-shadow: 0 10px 28px rgba(99,102,241,0.24);
-  white-space: nowrap;
+  padding: 10px 18px;
+  border-radius: 16px;
+  box-shadow: 0 14px 34px rgba(99,102,241,0.22), 0 0 0 1px rgba(99,102,241,0.12);
+  white-space: normal;
+  word-break: keep-all;
+  max-width: 290px;
+  min-width: 180px;
+  text-align: center;
   pointer-events: none;
   opacity: 0;
-  transition: all 0.26s var(--ease-spring);
-  z-index: 50;
+  transition: all 0.28s var(--ease-spring);
+  z-index: 100;
 }
 
 .lilly-speech-bubble::after {
@@ -2130,9 +2142,9 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   width: 0; height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 7px solid var(--primary);
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 8px solid var(--primary);
 }
 
 .lilly-speech-bubble.show {
@@ -2140,36 +2152,70 @@ html, body {
   transform: translateX(-50%) translateY(0);
 }
 
-/* 토스트 팝업 */
-.toast-popup {
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   [고도화] 최상위 뷰포트 센터링 스택형 토스트 시스템
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.toast-stack-container {
   position: fixed;
-  bottom: 28px;
+  top: 24px;
   left: 50%;
-  transform: translateX(-50%) translateY(50px);
-  background: rgba(15, 23, 42, 0.92);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 100005;
+  pointer-events: none;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+}
+
+.toast-popup,
+.toast-item {
+  position: relative;
+  background: rgba(15, 23, 42, 0.94);
   color: #FFFFFF;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 12px 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 11px 22px;
   border-radius: var(--r-pill);
   font-size: 13.5px;
   font-weight: 600;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.3s var(--ease-spring), opacity 0.3s ease;
-  z-index: 20000;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   max-width: 90vw;
   text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-16px) scale(0.96);
+  transition: transform 0.28s var(--ease-spring), opacity 0.28s ease;
 }
 
-.toast-popup.show {
+.toast-popup.show,
+.toast-item.show {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* 모바일 사이드바 백드롭 (Dim Overlay) */
+.sidebar-backdrop-dim {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 150;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.sidebar-backdrop-dim.active {
+  opacity: 1;
   pointer-events: auto;
 }
 
@@ -2301,17 +2347,6 @@ html, body {
   }
 
   /* 사이드바 열렸을 때 백드롭 dim */
-  .app-sidebar.open::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    left: 280px;
-    background: rgba(15, 23, 42, 0.4);
-    z-index: -1;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-  }
-
   .btn-open-sidebar {
     display: flex !important;
   }
@@ -2509,7 +2544,8 @@ html, body {
     width: 100%;
     max-width: 100%;
     border-radius: var(--r-lg) var(--r-lg) 0 0;
-    max-height: 92vh;
+    max-height: 90vh;
+    padding: 28px 20px max(28px, env(safe-area-inset-bottom));
     overflow-y: auto;
     animation: slideUpMobile 0.35s var(--ease-spring);
   }
@@ -2525,6 +2561,7 @@ html, body {
     max-width: 100%;
     border-radius: var(--r-lg) var(--r-lg) 0 0;
     max-height: 85vh;
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
     overflow-y: auto;
   }
 

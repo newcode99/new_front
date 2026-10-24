@@ -7,22 +7,61 @@
 
 const API_BASE = ""; // 동일 도메인 FastAPI 서빙 규격
 
-// 릴스 대본 생성 템플릿 엔진 (길이 및 톤앤매너 반영)
+// 릴스 대본 생성 템플릿 엔진 (의도 분류 Intent Detection + 길이 및 톤앤매너 반영)
 const DummyScriptGenerator = {
+    // 사용자 입력 의도 판별 (일반 대화 vs 릴스 기획 요청)
+    detectIntent(prompt) {
+        const clean = (prompt || "").trim().toLowerCase();
+        const greetingKeywords = [
+            "안녕", "안녕하세요", "ㅎㅇ", "하이", "반가워", "반갑습니다", "너 누구야",
+            "누구니", "이름이 뭐야", "뭐할 수 있어", "도움말", "help", "hello", "hi",
+            "테스트", "test", "릴리야", "반갑", "고마워", "감사", "수고", "굿모닝"
+        ];
+        
+        const hasScriptKeyword = ["대본", "릴스", "숏폼", "쇼츠", "기획", "영상", "콘티", "훅", "시나리오", "브이로그", "팁", "추천", "만들어", "작성", "짜줘", "알려줘"].some(k => clean.includes(k));
+        const isGreeting = greetingKeywords.some(k => clean === k || clean.startsWith(k + " ") || clean.endsWith(" " + k));
+
+        if (isGreeting && !hasScriptKeyword) {
+            return "GREETING";
+        }
+        if (clean.length <= 4 && !hasScriptKeyword) {
+            return "GENERAL_CHAT";
+        }
+        return "SCRIPT_CREATION";
+    },
+
     generate(prompt, duration = "30s", tone = "viral", context = []) {
+        const intent = this.detectIntent(prompt);
+
+        // 1. 단순 인사 및 일반 대화 처리 (사용자 의도에 맞춘 자연스러운 릴리 디렉터 응답)
+        if (intent === "GREETING" || intent === "GENERAL_CHAT") {
+            return `안녕하세요! 숏폼·릴스 바이럴 기획 AI 디렉터 **릴리(Lilly)**예요! 🎬✨
+
+크리에이터님의 채널 떡상을 위해 **3초 만에 시선을 사로잡는 킬링 훅**부터 **씬별 카메라 앵글, 대사, 연출 팁, 추천 BGM**까지 실시간으로 완벽하게 기획해 드려요!
+
+💡 **릴리에게 이렇게 아이디어를 한 줄만 던져보세요:**
+• "퇴근 후 30분 만에 끝내는 홈트 30초 릴스 대본 짜줘"
+• "다이어트 작심삼일 직장인 현실 공감 숏폼 콘티"
+• "인스타 알고리즘에서 저장 폭발하는 꿀팁 TOP 3 기획"
+
+어떤 주제나 상황으로 영상을 만들고 싶으신가요? 지금 편하게 말씀해 주세요! 🚀`;
+        }
+
+        // 2. 전문 릴스 대본 기획안 생성
         const title = prompt.length > 25 ? prompt.substring(0, 25) + "..." : prompt;
         
-        let toneDesc = "트렌디한 비트 & 빠른 컷전환";
+        let toneDesc = "트렌디한 비트 & 빠른 컷전환 (바이럴 최적화)";
         let hookPhrase = `"잠깐! 아직도 이렇게 하고 계신가요? 90%가 무조건 후회하는 치명적 진실!"`;
         
         if (tone === "humor") {
+            toneDesc = "코믹하고 엉뚱한 BGM & 반전 사운드 (유머/공감)";
             toneDesc = "코믹하고 엉뚱한 BGM, 반전 효과음";
             hookPhrase = `"세상 사람들 다 아는데 나만 어제 안 충격 실화... 실화냐?"`;
         } else if (tone === "pro") {
-            toneDesc = "차분하고 신뢰감 있는 Lo-Fi 앰비언트 비트";
+            toneDesc = "차분하고 신뢰감 있는 Lo-Fi 앰비언트 비트 (전문 정보형)";
             hookPhrase = `"단 10초 만에 생산성 3배 높이는 전문가 비공개 치트키."`;
         } else if (tone === "vlog") {
-            toneDesc = "따뜻한 어쿠스틱 기타 & 일상 감성 멜로디";
+            toneDesc = "따뜻한 어쿠스틱 기타 & 일상 감성 멜로디 (일상 브이로그)";
             hookPhrase = `"지친 하루 끝에 나를 구원해 준 소소하지만 확실한 기록."`;
         }
 

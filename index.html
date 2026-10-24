@@ -491,8 +491,13 @@
         </main>
     </div>
 
-    <!-- 토스트 -->
-    <div id="toast" class="toast-popup"></div>
+    <!-- 모바일 사이드바 백드롭 (Dim Overlay) -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop-dim" onclick="closeSidebarMobile()"></div>
+
+    <!-- [고도화] 최상위 스택형 토스트 컨테이너 (화면 상단 정중앙 플로팅) -->
+    <div id="toast-container" class="toast-stack-container" aria-live="polite">
+        <div id="toast" class="toast-popup"></div>
+    </div>
 
     <!-- 파티클 레이어 -->
     <div id="particle-container" class="particle-canvas-layer"></div>
